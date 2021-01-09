@@ -10,7 +10,7 @@ from storage.dict import dict_mode as _DICC
 from storage.isam import isam_mode as _ISAM
 from storage.json import json_mode as _JSON
 from storage.hash import hash_mode as _HASH
-
+import node_server as chaing
 #Definicion de constantes
 cModos = ['avl', 'b', 'bplus', 'dict', 'isam', 'json', 'hash']
 cCodificaciones = ['ascii', 'iso-8859-1', 'utf8']
@@ -625,3 +625,45 @@ def decrypt(cipherBackup:str, password:str) -> str:
             return 1
     else:
         return 1 
+
+#Activa el modo seguro para una tabla de una base de datos
+def safeModeOn(database:str, table:str) -> int :
+    global variableGlobal
+    variableGlobal=0
+    d = database.lower()
+    t = table.lower()
+    itemBD = buscaBBDD(d)
+    if itemBD:
+        itemTBL = buscarTabla(d, t)      
+        if itemTBL:
+            if variableGlobal == 1:
+                return 4
+            else:                
+                variableGlobal = 1
+                return 0
+        else:
+            return 3
+    else:
+        return 2
+
+#Desactiva el modo seguro en la tabla especificada de la base de datos
+def safeModeOff(database:str, table:str) -> int:
+    global variableGlobal
+    variableGlobal = 1
+    d = database.lower()
+    t = table.lower()
+    itemBD = buscaBBDD(d)
+    if itemBD:
+        itemTBL = buscarTabla(d, t)      
+        if itemTBL:
+            if variableGlobal == 1:
+                variableGlobal = 0
+                with open("register.json","wb") as archivo_generado:
+                    archivo_generado.write(chaing.get_chain().encode())                
+                return 0
+            else:                                
+                return 4
+        else:
+            return 3
+    else:
+        return 2

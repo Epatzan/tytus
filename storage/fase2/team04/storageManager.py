@@ -12,8 +12,10 @@ from storage.json_mode import jsonMode
 from storage.dict import DictMode
 from storage.b import Serializable
 from DBList import DBList
+from blockchain import blockchain
+import hashlib
 import re
-import codificar
+import zlib
 from random import randint
 
 MODES = ['avl', 'b', 'bplus', 'dict', 'isam', 'json', 'hash']
